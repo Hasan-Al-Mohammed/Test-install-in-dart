@@ -1,0 +1,34 @@
+name: Build Flutter APK
+
+on:
+  push:
+    branches:
+      - main  # تعديل حسب اسم الفرع لديك
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.x"  # حدد إصدار Flutter المناسب
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build APK with custom main file
+        run: flutter build apk --release -t lib/main.flutter.dart  # ملف Flutter المخصص
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
